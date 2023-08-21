@@ -1,0 +1,8 @@
+[package]
+name = "LS1"
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+turtle-graphics = "0.1.2"
+rand = "0.8"

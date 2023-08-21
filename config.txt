@@ -1,0 +1,9 @@
+axiom = "A+B+C+D+F"
+rule1 = "A" -> "A+A-A--A+A+A"
+rule2 = "B" -> "B+B-B--B+B+B"
+rule3 = "C" -> "C+C-C--C+C+C"
+rule4 = "D" -> "D+D-D--D+D+D"
+rule5 = "F" -> "F+F-F--F+F+F"
+iterations = 5
+angle = 72
+is_random_angle = false
