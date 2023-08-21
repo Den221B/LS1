@@ -36,9 +36,8 @@ struct LSystem {
 fn parse_rules(s: String) -> [String; 2] {
     let vec: Vec<String> = s.split("->").map(String::from).collect();
     if vec.len() >= 2 {
-        [vec[0].clone(), vec[1].clone()] // Преобразование в массив
+        [vec[0].clone(), vec[1].clone()]
     } else {
-        // Здесь можно обработать случай, когда элементов меньше, чем 2
         [String::new(), String::new()]
     }
 }
