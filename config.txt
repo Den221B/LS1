@@ -7,3 +7,6 @@ rule5 = "F" -> "F+F-F--F+F+F"
 iterations = 5
 angle = 72
 is_random_angle = false
+direction = 0
+line_lenght = 10
+file_name = "NerwRend"

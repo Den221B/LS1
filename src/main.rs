@@ -31,6 +31,9 @@ struct LSystem {
     iterations: u32,
     angle: i32,
     is_random_angle: bool,
+    direction: i32,
+    line_lenght: i32,
+    file_name: String,
 }
 
 fn parse_rules(s: String) -> [String; 2] {
@@ -65,6 +68,9 @@ fn main() {
         iterations: 0,
         angle: 0,
         is_random_angle: false,
+        direction: 0,
+        line_lenght: 0,
+        file_name: String::new(),
     };
 
     for line in contents.lines(){
@@ -81,39 +87,40 @@ fn main() {
             "iterations" => l_system.iterations = value.parse().expect("Invalid value format"),
             "angle" => l_system.angle = value.parse().expect("Invalid value format"),
             "is_random_angle" => l_system.is_random_angle = value.parse().expect("Invalid value format"),
+            "direction" => l_system.direction = value.parse().expect("Invalid value format"),
+            "line_lenght" => l_system.line_lenght = value.parse().expect("Invalid value format"),
+            "file_name" => l_system.file_name = value.to_string(),
             _ => {}
         }
     };
     let rules = [
         RulePair {
-            rule1: l_system.rule1[0].clone().to_string().trim_matches('"').to_string(),
-            rule2: l_system.rule1[1].clone().to_string().trim_matches('"').to_string(),
+            rule1: l_system.rule1[0].clone().trim_matches('"').to_string(),
+            rule2: l_system.rule1[1].clone().trim_matches('"').to_string(),
         },
         RulePair {
-            rule1: l_system.rule2[0].clone().to_string().trim_matches('"').to_string(),
-            rule2: l_system.rule2[1].clone().to_string().trim_matches('"').to_string(),
+            rule1: l_system.rule2[0].clone().trim_matches('"').to_string(),
+            rule2: l_system.rule2[1].clone().trim_matches('"').to_string(),
         },
         RulePair {
-            rule1: l_system.rule3[0].clone().to_string().trim_matches('"').to_string(),
-            rule2: l_system.rule3[1].clone().to_string().trim_matches('"').to_string(),
+            rule1: l_system.rule3[0].clone().trim_matches('"').to_string(),
+            rule2: l_system.rule3[1].clone().trim_matches('"').to_string(),
         },
         RulePair {
-            rule1: l_system.rule4[0].clone().to_string().trim_matches('"').to_string(),
-            rule2: l_system.rule4[1].clone().to_string().trim_matches('"').to_string(),
+            rule1: l_system.rule4[0].clone().trim_matches('"').to_string(),
+            rule2: l_system.rule4[1].clone().trim_matches('"').to_string(),
         },
         RulePair {
-            rule1: l_system.rule5[0].clone().to_string().trim_matches('"').to_string(),
-            rule2: l_system.rule5[1].clone().to_string().trim_matches('"').to_string(),
+            rule1: l_system.rule5[0].clone().trim_matches('"').to_string(),
+            rule2: l_system.rule5[1].clone().trim_matches('"').to_string(),
         },
 
     ];
-    let axiom =l_system.axiom.as_str();
-    let n= l_system.iterations.clone();
-    let ang = l_system.angle.clone();
-    let result = generate_system(axiom, &rules, n);
-    let r_a = l_system.is_random_angle.clone();
-    println!("n = {} : {}", n, result);
-    draw_l_s(result, 0.0, ang, 10.0, "Pentadendrite", r_a);
+    let result = generate_system(l_system.axiom.as_str(), &rules, l_system.iterations.clone());
+    println!("n = {} : {}", l_system.iterations, result);
+    let mut name = l_system.file_name.clone();
+    let s : &str = name.as_str().trim_matches('"');
+    draw_l_s(result, l_system.direction.clone() as f32, l_system.angle.clone(), l_system.line_lenght.clone() as f32,s,l_system.is_random_angle.clone());
 }
 fn draw_l_s(
     l_s_s: String,
@@ -125,50 +132,20 @@ fn draw_l_s(
 ) {
     let mut t = Canvas::new();
     t.right(init_direction);
+    let mut gen_letters_h = ['A','B','C','D','E','F','G'];
+    let mut gen_letters_l = ['a','b','c','d','e','f','g'];
     for sym in l_s_s.chars() {
+        for i in gen_letters_h{
+            if sym==i{
+                t.forward(default_distance)
+            }
+        }
+        for a in gen_letters_l{
+            if sym==a{
+                t.move_forward(default_distance)
+            }
+        }
         match sym {
-        'F' => {
-            t.forward(default_distance);
-        }
-        'G' => {
-            t.forward(default_distance);
-        }
-        'A' => {
-            t.forward(default_distance);
-        }
-        'B' => {
-            t.forward(default_distance);
-        }
-        'C' => {
-            t.forward(default_distance);
-        }
-        'D' => {
-            t.forward(default_distance);
-        }
-        'E' => {
-            t.forward(default_distance);
-        }
-        'f' => {
-            t.move_forward(default_distance);
-        }
-        'g' => {
-            t.move_forward(default_distance);
-        }
-        'a' => {
-            t.move_forward(default_distance);
-        }
-        'b' => {
-            t.move_forward(default_distance);
-        }
-        'c' => {
-            t.move_forward(default_distance);
-        }
-        'd' => {
-            t.move_forward(default_distance);
-        }
-        'e' => {
-            t.move_forward(default_distance);
-        }
         '+' => {
             t.rotate(-gg_r(default_angle,is_r));
         }
@@ -184,9 +161,9 @@ fn draw_l_s(
         _ => {}
     }
     }
-    t.save_svg(&mut File::create(filename.to_string() + ".svg").unwrap())
+    t.save_svg(&mut File::create("Rendered/".to_owned() + &filename.to_string() + ".svg").unwrap())
         .unwrap();
-    t.save_eps(&mut File::create(filename.to_string() + ".eps").unwrap())
+    t.save_eps(&mut File::create("Rendered/".to_owned() + &filename.to_string() + ".eps").unwrap())
         .unwrap();
 }
 fn gg_r(ag: i32, b: bool) -> f32 {
